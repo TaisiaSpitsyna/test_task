@@ -2,77 +2,144 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
 
+func addition(a, b int) int {
+	return a + b
+}
+func subtraction(a, b int) int {
+	return a - b
+}
+func multiplication(a, b int) int {
+	return a * b
+}
+func quotient(a, b int) int {
+	return a / b
+}
+
+var romanSymbol = map[rune]int{
+	'I': 1,
+	'V': 5,
+	'X': 10,
+	'L': 50,
+	'C': 100,
+	'D': 500,
+	'M': 1000,
+}
+var intValues = map[int]string{
+	1000: "M",
+	900:  "CM",
+	500:  "D",
+	400:  "CD",
+	100:  "C",
+	90:   "XC",
+	50:   "L",
+	40:   "XL",
+	10:   "X",
+	9:    "IX",
+	5:    "V",
+	4:    "IV",
+	1:    "I",
+}
+
+func romanToInt(a string) int {
+	first, ok := romanSymbol[rune(a[0])]
+	if !ok {
+		return -1
+	}
+	if len(a) == 1 {
+		return first
+	}
+	second, ok := romanSymbol[rune(a[1])]
+	if !ok {
+		return -1
+	}
+	if second > first {
+		next := romanToInt(a[2:])
+		if next == -1 {
+			return -1
+		}
+		return (second - first) + next
+	}
+	next := romanToInt(a[1:])
+	if next == -1 {
+		return -1
+	}
+	return first + next
+}
+func intToRoman(a int) string {
+	var roman strings.Builder
+	for value, symbol := range intValues {
+		for a >= value {
+			roman.WriteString(symbol)
+			a -= value
+		}
+	}
+
+	return roman.String()
+}
+
 func main() {
-	var numberA string
-	fmt.Print("Input:")
-	fmt.Fscan(os.Stdin, &numberA)
-	operationparts := strings.Split(numberA, " ")
-	var a = strconv.Atoi(operationparts[0])
-	var b = strconv.Atoi(operationparts[2])
-	if err == nil {
-		if operationparts[1] == "+" {
-			Addition(operationparts[0], operationparts[2])
+	var choice string
+	var a string
+	var b string
+	var x int
+	var y int
+	var isroman bool
+	var result int
+	isroman = false
+	fmt.Println("Введите первое число:")
+	fmt.Scanln(&a)
+	fmt.Println("Введите знак действия:")
+	fmt.Scanln(&choice)
+	fmt.Println("Введите второе число:")
+	fmt.Scanln(&b)
+	x, err1 := strconv.Atoi(a)
+	y, err2 := strconv.Atoi(b)
+	if err1 != nil {
+		if err2 != nil {
+			x = romanToInt(a)
+			y = romanToInt(b)
+			isroman = true
+			if y == -1 || x == -1 {
+				fmt.Println("Недопустимый формат чисел")
+				return
+			}
+		} else {
+			fmt.Println("Числа разного формата")
+			return
 		}
-		if operationparts[1] == "-" {
-			Subtraction(operationparts[0], operationparts[2])
-		}
-		if operationparts[1] == "*" {
-			Multiplication(operationparts[0], operationparts[2])
-		}
-		if operationparts[1] == "/" {
-			Division(operationparts[0], operationparts[2])
-		}
-
+	} else if err2 != nil {
+		fmt.Println("Числа разного формата")
+		return
+	}
+	if x < 1 || x > 10 || y < 1 || y > 10 {
+		fmt.Println("Числа не входят в диапазон")
+		return
+	}
+	if choice == "+" {
+		result = addition(x, y)
+	} else if choice == "-" {
+		result = subtraction(x, y)
+	} else if choice == "*" {
+		result = multiplication(x, y)
+	} else if choice == "/" {
+		result = quotient(x, y)
+	} else {
+		fmt.Println("Ошибка")
+		return
+	}
+	if isroman && result <= 0 {
+		fmt.Println("Отрицательный результат")
+		return
+	}
+	fmt.Print("Результат: ")
+	if isroman {
+		fmt.Println(intToRoman(result))
+	} else {
+		fmt.Println(result)
 	}
 
-	roman := map[string]int{
-		"I":    1,
-		"II":   2,
-		"III":  3,
-		"IV":   4,
-		"V":    5,
-		"VI":   6,
-		"VII":  7,
-		"VIII": 8,
-		"IX":   9,
-		"X":    10,
-	}
-	toroman := map[int]string{
-		1:  "I",
-		2:  "II",
-		3:  "III",
-		4:  "IV",
-		5:  "V",
-		6:  "VI",
-		7:  "VII",
-		8:  "VIII",
-		9:  "IX",
-		10: "X",
-	}
-
-}
-
-func Addition(numberA, numberB int) int {
-	sum := numberA + numberB
-	return sum
-}
-
-func Subtraction(numberA, numberB int) int {
-	difference := numberA - numberB
-	return difference
-}
-
-func Multiplication(numberA, numberB int) int {
-	product := numberA * numberB
-	return product
-}
-
-func Division(numberA, numberB int) int {
-	quotient := numberA / numberB
-	return quotient
 }
