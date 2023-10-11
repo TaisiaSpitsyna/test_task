@@ -90,12 +90,8 @@ func main() {
 	var isroman bool
 	var result int
 	isroman = false
-	fmt.Println("Введите первое число:")
-	fmt.Scanln(&a)
-	fmt.Println("Введите знак действия:")
-	fmt.Scanln(&choice)
-	fmt.Println("Введите второе число:")
-	fmt.Scanln(&b)
+	fmt.Println("Введите выражение:")
+	fmt.Scanln(&a, &choice, &b)
 	x, err1 := strconv.Atoi(a)
 	y, err2 := strconv.Atoi(b)
 	if err1 != nil {
@@ -132,10 +128,9 @@ func main() {
 		return
 	}
 	if isroman && result <= 0 {
-		fmt.Println("Отрицательный результат")
+		fmt.Println("Ошибка, в римской системе нет отрицательных чисел.")
 		return
 	}
-	fmt.Print("Результат: ")
 	if isroman {
 		fmt.Println(intToRoman(result))
 	} else {
